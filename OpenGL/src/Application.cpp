@@ -8,15 +8,14 @@ int main(void)
 {
     GLFWwindow* window;
 
-    /* Initialize the library */
+
     if (!glfwInit())
         return -1;
 
-    /* Create a windowed mode window and its OpenGL context */
+
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 
-   
-    /* Make the window's context current */
+
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -28,27 +27,33 @@ int main(void)
     glGenBuffers(1, &a);
 
     std::cout << glGetString(GL_VERSION) << std::endl;
+    float positions[6] = {
+        0.5,  0.5,
+        0.0,  1.0,
+        0.2, -1.0,
+    };
+
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, 6*sizeof(float), positions,GL_STATIC_DRAW);
 
   
-    /* Loop until the user closes the window */
+
     while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
+     
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBegin(GL_TRIANGLES);
-        glVertex2d(0.5, 0.5);
-        glVertex2d(0.0, 1.0);
-        glVertex2d(0.2, - 1.0);
-        glEnd();
+        /*
+        which data to draw?
+        we should to know OpenGL is a state mechine.the glBindBuffer set the state!
+        we can use glBindBuffer(GL_ARRAY_BUFFER, 0) to change the binded buffer !
+         */
+        glDrawArrays(GL_TRIANGLES, 0, 3); 
         
-
-        /* Poll for and process events */
         glfwPollEvents();
 
-        
-
-        /* Swap front and back buffers */
         glfwSwapBuffers(window);
     }
 

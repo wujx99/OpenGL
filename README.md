@@ -1,1 +1,4 @@
-# Hazel
+# OpenGL
+
+[docs](https://docs.gl/)
+
