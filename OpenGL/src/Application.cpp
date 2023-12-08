@@ -38,18 +38,18 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
     glBufferData(GL_ARRAY_BUFFER, 6*sizeof(float), positions,GL_STATIC_DRAW);
 
-  
+    /*
+    tell OpenGL the layout of vertex array
+    */
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
 
     while (!glfwWindowShouldClose(window))
     {
      
         glClear(GL_COLOR_BUFFER_BIT);
 
-        /*
-        which data to draw?
-        we should to know OpenGL is a state mechine.the glBindBuffer set the state!
-        we can use glBindBuffer(GL_ARRAY_BUFFER, 0) to change the binded buffer !
-         */
         glDrawArrays(GL_TRIANGLES, 0, 3); 
         
         glfwPollEvents();
