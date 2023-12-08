@@ -7,6 +7,9 @@
 #include <string>
 #include <sstream>
 
+#define ASSERT(x) if(!(x)) __debugbreak();
+
+#define GLCALL(x) GlClearError(); x; ASSERT(GlGetError(#x, __FILE__, __LINE__))
 static void GlClearError()
 {
 	while (glGetError()!=GL_NO_ERROR)
@@ -15,12 +18,16 @@ static void GlClearError()
 	}
 }
 
-static void GlGetError()
+static bool GlGetError(const char*func, const char*file, unsigned int line)
 {
 	while (GLenum error = glGetError())
 	{
-		std::cout << "get error :" << error << std::endl;
+		std::cout << "get error :" << error <<
+			" " << func << " :" << file << ":"<< line << std::endl;
+		
+		return false;
 	}
+	return true;
 }
 
 struct ShaderSource
@@ -167,12 +174,9 @@ int main(void)
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		/*
-		change GL_UNSIGNED_INT to GL_INT to get error!
-		*/
-		GlClearError(); // clear the error buffer data with while loop
-		glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr);
-		GlGetError(); // get the error with glGetError with while loop
+		
+		GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
+		
 
 		glfwPollEvents();
 
