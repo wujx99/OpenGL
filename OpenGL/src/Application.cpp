@@ -7,25 +7,21 @@
 #include <string>
 #include <sstream>
 
-/*
-the readable way to return muti-return value
-*/
+
 struct ShaderSource
 {
     std::string vertexSource;
     std::string fragmentSource;
 };
 
-/*
-read the all shaders from one file to string
-*/
+
 static ShaderSource ParseShader(const std::string& filePath)
 {
     std::ifstream fs(filePath);
     std::string line;
 
     std::stringstream ss[2];
-    // good practice!
+  
     enum class ShaderType
     {
         NONE = -1, VERTEX = 0, FRAGMENT = 1,
@@ -74,7 +70,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
 
 static unsigned int CreatShader(const std::string& vertexShader, const std::string& fragShader)
 {
-    // inconsist with other api£¡
+
     unsigned int program = glCreateProgram();
     unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragShader);
@@ -114,25 +110,36 @@ int main(void)
     glGenBuffers(1, &a);
 
     std::cout << glGetString(GL_VERSION) << std::endl;
-    float positions[6] = {
-        0.5,  0.5,
-        0.0,  1.0,
-        0.2, -1.0,
+    float positions[8] = {
+        -0.5, -0.5,
+         0.5, -0.5,
+         0.5,  0.5,
+        -0.5,  0.5
+    };
+
+    /*
+    index buffer we need for drawing a square
+    */
+    unsigned int indexs[] = {
+        0, 1, 2,
+        2, 3, 0
     };
 
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6*sizeof(float), positions,GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 8*sizeof(float), positions,GL_STATIC_DRAW);
 
     
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 
-    /*
-    the filepath is relative! in visual studio ,you can find the 
-    Working Directory is $(PrijectDir) in debuging set in properites
-    */
+    unsigned int ibo; // index buffer object
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indexs, GL_STATIC_DRAW);
+
+
     ShaderSource ss = ParseShader("asset/shaders/basic.shader");
     std::cout << "VERTEX" << std::endl;
     std::cout << ss.vertexSource << std::endl;
@@ -148,8 +155,12 @@ int main(void)
      
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3); 
-        
+        /*
+        use the index buffer (GL_ELEMENT_ARRAY_BUFFER) for draw
+        the OpenGL is a state machine,so just set "nullptr".
+        */
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
         glfwPollEvents();
 
         glfwSwapBuffers(window);
