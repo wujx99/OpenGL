@@ -9,8 +9,22 @@
 
 #define ASSERT(x) if(!(x)) __debugbreak();
 
-#define GLCALL(x) GlClearError(); x; ASSERT(GlGetError(#x, __FILE__, __LINE__))
-static void GlClearError()
+#ifdef DEBUG
+	#define GLCallV( x ) \
+		 GLClearErrors(); \
+		 x; \
+		 if ( !GLCheckErrors( #x, __FILE__, __LINE__) ) __debugbreak();
+	#define GLCall( x ) [&]() { \
+		 GLClearErrors(); \
+		 auto retVal = x; \
+		 if ( !GLCheckErrors( #x, __FILE__, __LINE__) ) __debugbreak(); \
+		 return retVal; \
+	   }()
+#else
+	#define GLCallV( x ) x;
+	#define GLCall( x ) x;
+#endif
+static void GLClearErrors()
 {
 	while (glGetError()!=GL_NO_ERROR)
 	{
@@ -18,7 +32,7 @@ static void GlClearError()
 	}
 }
 
-static bool GlGetError(const char*func, const char*file, unsigned int line)
+static bool GLCheckErrors(const char*func, const char*file, unsigned int line)
 {
 	while (GLenum error = glGetError())
 	{
@@ -119,9 +133,8 @@ int main(void)
 
 	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 
-
 	glfwMakeContextCurrent(window);
-
+	glfwSwapInterval(1);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
@@ -169,13 +182,18 @@ int main(void)
 	unsigned int shader = CreatShader(ss.vertexSource, ss.fragmentSource);
 	glUseProgram(shader);
 
+	int location = GLCall(glGetUniformLocation(shader, "u_Color"));
+	ASSERT(location != -1);
+	glUniform4f(location, 0.1, 0.5, 0.8, 1.0);
+
+	
 	while (!glfwWindowShouldClose(window))
 	{
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		
-		GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
+		GLCallV(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 		
 
 		glfwPollEvents();

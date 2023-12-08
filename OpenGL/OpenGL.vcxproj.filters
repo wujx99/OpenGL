@@ -1281,7 +1281,4 @@
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="asset\shaders\basic.shader" />
-  </ItemGroup>
 </Project>

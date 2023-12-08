@@ -80,17 +80,14 @@ project "OpenGL"
 
 
 	filter "configurations:Debug"
-		defines "HZ_DEBUG"
+		defines "DEBUG"
 		runtime "Debug"
 		symbols "on"
 		
 	filter "configurations:Release"
-		defines "HZ_RELEASE"
+		defines "RELEASE"
 		runtime "Release"
 		optimize "on"
-	filter "configurations:Debug"
-		defines "HZ_DIST"
-		runtime "Release"
-		optimize "on"
+
 
 
