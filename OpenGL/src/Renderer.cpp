@@ -20,3 +20,16 @@ bool GLCheckErrors(const char* func, const char* file, unsigned int line)
 	}
 	return true;
 }
+
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
+{
+	shader.Bind();
+	ib.Bind();
+	va.Bind();
+}
+
+void Renderer::Clear()
+{
+	GLCallV(glClear(GL_COLOR_BUFFER_BIT));
+
+}

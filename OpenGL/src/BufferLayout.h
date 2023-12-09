@@ -1,9 +1,8 @@
 #pragma once
 #include <cstdint>
-#include <Renderer.h>
+
 #include <iostream>
 #include <vector>
-
 #include "ShaderDataType.h"
 struct BufferElement
 {

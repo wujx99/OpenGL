@@ -81,19 +81,22 @@ int main(void)
 		ib.UnBind();
 		vb.UnBind();
 
+		Renderer renderer;
 		float r = 0.0f;
 		float increment = 0.05f;
 
 		while (!glfwWindowShouldClose(window))
 		{
 
-			GLCallV(glClear(GL_COLOR_BUFFER_BIT));
+			renderer.Clear();
 
+			/*
+			manually set uniform 
+			*/
 			shader.Bind();
 			shader.SetUniform4f("u_Color", r, 0.5, 0.8, 1.0);
 
-			ib.Bind();
-			va.Bind();
+			renderer.Draw(va, ib, shader);
 
 			GLCallV(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
