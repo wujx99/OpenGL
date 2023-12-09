@@ -90,15 +90,11 @@ int main(void)
 
 			renderer.Clear();
 
-			/*
-			manually set uniform 
-			*/
 			shader.Bind();
 			shader.SetUniform4f("u_Color", r, 0.5, 0.8, 1.0);
 
 			renderer.Draw(va, ib, shader);
 
-			GLCallV(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 			if (r > 1 || r < 0)
 				increment = -increment;

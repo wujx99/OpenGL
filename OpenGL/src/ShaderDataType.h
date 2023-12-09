@@ -6,10 +6,7 @@ enum class ShaderDataType
 	None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 };
 
-/*
-in .h file you must make sure the defination is static ,or you will get a link error of 
-"alreay definded in .obj"
-*/
+
 static uint32_t ShaderDataTypeSize(ShaderDataType type)
 {
 	switch (type)

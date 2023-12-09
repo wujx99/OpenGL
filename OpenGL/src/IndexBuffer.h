@@ -9,7 +9,7 @@ public:
 	IndexBuffer(const unsigned int *data, unsigned int count);
 	~IndexBuffer();
 
-	inline unsigned int GetCount() { return m_Count; }
+	inline unsigned int GetCount() const{ return m_Count; }
 	void Bind() const;
 	void UnBind() const;
 };
