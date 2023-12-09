@@ -117,7 +117,6 @@ unsigned int Shader::CreatShader(const std::string& vertexShader, const std::str
 
 void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
 {
-	GLCallV(glUseProgram(m_RendererID));
 	int location = GetLocation(name);
 	GLCallV(glUniform4f(location, v0, v1, v2, v3));
 }

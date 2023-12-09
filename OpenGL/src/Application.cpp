@@ -11,6 +11,9 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "VertexArray.h"
+#include "BufferLayout.h"
+#include "ShaderDataType.h"
 
 
 int main(void)
@@ -54,17 +57,16 @@ int main(void)
 			2, 3, 0
 		};
 
-
-		unsigned int vao;
-		GLCallV(glGenVertexArrays(1, &vao));
-		GLCallV(glBindVertexArray(vao));
+		VertexArray va;
+		va.Bind();
 
 		VertexBuffer vb(positions, 8 * sizeof(float));
 		vb.Bind();
 
-
-		GLCallV(glEnableVertexAttribArray(0));
-		GLCallV(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0));
+		BufferLayout layout = {
+			{"vertex", ShaderDataType::Float2},
+		};
+		va.SetLayout(layout);
 
 		IndexBuffer ib(indexs, 6);
 		ib.Bind();
@@ -74,7 +76,7 @@ int main(void)
 		shader.SetUniform4f("u_Color", 0.1, 0.5, 0.8, 1.0);
 	
 
-		GLCallV(glBindVertexArray(0));
+		va.UnBind();
 		shader.UnBind();
 		ib.UnBind();
 		vb.UnBind();
@@ -91,7 +93,7 @@ int main(void)
 			shader.SetUniform4f("u_Color", r, 0.5, 0.8, 1.0);
 
 			ib.Bind();
-			GLCallV(glBindVertexArray(vao));
+			va.Bind();
 
 			GLCallV(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 

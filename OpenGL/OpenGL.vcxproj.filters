@@ -1279,6 +1279,9 @@
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\BufferLayout.h" />
+    <ClInclude Include="src\VertexArray.h" />
+    <ClInclude Include="src\ShaderDataType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -1288,5 +1291,7 @@
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\BufferLayout.cpp" />
+    <ClCompile Include="src\VertexArray.cpp" />
   </ItemGroup>
 </Project>
