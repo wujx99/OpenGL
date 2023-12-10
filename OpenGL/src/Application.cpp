@@ -16,6 +16,9 @@
 #include "ShaderDataType.h"
 #include "Texture.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 
 int main(void)
 {
@@ -44,10 +47,10 @@ int main(void)
 	
 	{
 		float positions[] = {
-			-0.5, -0.5, 0.0, 0.0,
-			 0.5, -0.5, 1.0, 0.0,
-			 0.5,  0.5, 1.0, 1.0,
-			-0.5,  0.5, 0.0, 1.0,
+			100, 100, 0.0, 0.0,
+			500, 100, 1.0, 0.0,
+			500, 500, 1.0, 1.0,
+			100, 500, 0.0, 1.0,
 		};
 
 
@@ -98,8 +101,25 @@ int main(void)
 
 		Shader shader("asset/shaders/basic.shader");
 		shader.Bind();
-		shader.SetUniform4f("u_Color", 0.1, 0.5, 0.8, 1.0);
-		
+		shader.SetUniform4f("u_Color", 0.1f, 0.5f, 0.8f, 1.0f);
+
+		/*
+		understand the means of projection! 
+		with ortho project matrix ,we can replace the vertexs cooridate to [-1 , 1]; 
+		*/
+		glm::mat4 proj = glm::ortho(0.0f, 900.f, 0.0f, 600.f, -1.0f, 1.0f);
+		/*
+		we want to take the camera to right by 100,so we just move vertexs to left by 100( -100.f)
+		*/
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.f, 0.f, 0.f)); 
+		/*
+		the model matrix is intuitive , so just do it directly
+		*/
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200.f, 200.f, 0.f));
+
+		glm::mat4 mvp = proj * view * model;
+		shader.SetUniformMat4f("u_MVP", mvp);
+
 		Texture texture("asset/textures/test.png");
 		texture.Bind(7);  //bind to slot 7, set uniform to 7!
 		shader.SetUniform1i("u_Texture", 7);
@@ -119,7 +139,7 @@ int main(void)
 			renderer.Clear();
 
 			shader.Bind();
-			shader.SetUniform4f("u_Color", r, 0.5, 0.8, 1.0);
+			shader.SetUniform4f("u_Color", r, 0.5f, 0.8f, 1.0f);
 
 			renderer.Draw(va, ib, shader);
 
