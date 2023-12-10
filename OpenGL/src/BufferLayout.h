@@ -12,7 +12,7 @@ struct BufferElement
 	uint32_t Offset;
 	bool Nomalized;
 public:
-	BufferElement() {};
+	BufferElement() = default;
 	BufferElement(const std::string& name, ShaderDataType type, bool nomalized = false)
 		:Name(name), Type(type), Size(ShaderDataTypeSize(Type)), Offset(0),Nomalized(nomalized) {
 		
@@ -43,7 +43,7 @@ private:
 	std::vector<BufferElement> m_elements;
 	uint32_t m_stride;
 public:
-	BufferLayout();
+	BufferLayout() = default;
 	BufferLayout(std::initializer_list<BufferElement> elements);
 
 	inline uint32_t GetStride() const { return m_stride; };

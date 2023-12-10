@@ -14,6 +14,7 @@
 #include "VertexArray.h"
 #include "BufferLayout.h"
 #include "ShaderDataType.h"
+#include "Texture.h"
 
 
 int main(void)
@@ -40,15 +41,13 @@ int main(void)
 	}
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
-	/*
-	use scope to make sure the stack allocate object vb, ib if free before glfwTerminate()
-	*/
+	
 	{
-		float positions[8] = {
-			-0.5, -0.5,
-			 0.5, -0.5,
-			 0.5,  0.5,
-			-0.5,  0.5
+		float positions[] = {
+			-0.5, -0.5, 0.0, 0.0,
+			 0.5, -0.5, 1.0, 0.0,
+			 0.5,  0.5, 1.0, 1.0,
+			-0.5,  0.5, 0.0, 1.0,
 		};
 
 
@@ -57,14 +56,22 @@ int main(void)
 			2, 3, 0
 		};
 
+		/*
+		* enable blend!
+		* i dont find the problem the tutorial have ,so just leave it as a tip!
+		*/ 
+		GLCallV(glEnable(GL_BLEND));
+		GLCallV(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
 		VertexArray va;
 		va.Bind();
 
-		VertexBuffer vb(positions, 8 * sizeof(float));
+		VertexBuffer vb(positions, 16 * sizeof(float));
 		vb.Bind();
 
 		BufferLayout layout = {
 			{"vertex", ShaderDataType::Float2},
+			{"texcoord", ShaderDataType::Float2},
 		};
 		va.SetLayout(layout);
 
@@ -74,7 +81,10 @@ int main(void)
 		Shader shader("asset/shaders/basic.shader");
 		shader.Bind();
 		shader.SetUniform4f("u_Color", 0.1, 0.5, 0.8, 1.0);
-	
+		
+		Texture texture("asset/textures/test.png");
+		texture.Bind(7);  //bind to slot 7, set uniform to 7!
+		shader.SetUniform1i("u_Texture", 7);
 
 		va.UnBind();
 		shader.UnBind();

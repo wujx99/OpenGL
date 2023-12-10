@@ -1282,6 +1282,8 @@
     <ClInclude Include="src\BufferLayout.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\ShaderDataType.h" />
+    <ClInclude Include="src\vendor\stbimage\stb_image.h" />
+    <ClInclude Include="src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -1293,5 +1295,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\BufferLayout.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
+    <ClCompile Include="src\vendor\stbimage\stb_image.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
 </Project>
