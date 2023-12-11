@@ -23,6 +23,8 @@
 #include "vendor/imgui/imgui_impl_glfw.h"
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
+#include "tests/TestColor.h"
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -115,10 +117,14 @@ int main(void)
 		float r = 0.0f;
 		float increment = 0.05f;
 
+		test::TestColor testColor;
+
 		while (!glfwWindowShouldClose(window))
 		{
 
 			renderer.Clear();
+
+			testColor.OnRender();
 
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
@@ -130,6 +136,8 @@ int main(void)
 			{
 				ImGui::SliderFloat3("TranslateA", &translateA.x, 0.0f, 900.f);    // set the translate of model matrix!
 				ImGui::SliderFloat3("TranslateB", &translateB.x, 0.0f, 900.f);    // set the translate of model matrix!
+
+				testColor.OnImGuiRender();
 			}
 			ImGui::End();
 
@@ -143,7 +151,7 @@ int main(void)
 			}
 			{
 				// second object
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), 2.f * translateB);
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translateB);
 				glm::mat4 mvp = proj * view * model;
 				shader.Bind();
 				shader.SetUniformMat4f("u_MVP", mvp);
