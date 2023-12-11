@@ -24,6 +24,7 @@
 #include "vendor/imgui/imgui_impl_opengl3.h"
 
 #include "tests/TestColor.h"
+#include "tests/Test.h"
 
 int main(void)
 {
@@ -114,30 +115,50 @@ int main(void)
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui::StyleColorsDark();
 
+		// testMenu
+		test::Test* currentTest = nullptr;
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		currentTest = testMenu;
+
+		testMenu->RegisterTest<test::TestColor>("Test Color");
+
 		float r = 0.0f;
 		float increment = 0.05f;
 
-		test::TestColor testColor;
+		
 
 		while (!glfwWindowShouldClose(window))
 		{
 
 			renderer.Clear();
 
-			testColor.OnRender();
+			
 
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+			
+			if (currentTest)
+			{
+				currentTest->OnUpdate(0.0f);
+				currentTest->OnRender();
+				ImGui::Begin("test");
+				if (currentTest != testMenu && ImGui::Button("<--"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
+			}
 
 			ImGui::Begin("Imgui debug!");  
 			{
 				ImGui::SliderFloat3("TranslateA", &translateA.x, 0.0f, 900.f);    // set the translate of model matrix!
 				ImGui::SliderFloat3("TranslateB", &translateB.x, 0.0f, 900.f);    // set the translate of model matrix!
 
-				testColor.OnImGuiRender();
 			}
 			ImGui::End();
 

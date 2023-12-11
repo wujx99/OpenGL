@@ -1355,5 +1355,6 @@
       <Filter>src\vendor\stbimage</Filter>
     </ClCompile>
     <ClCompile Include="src\tests\TestColor.cpp" />
+    <ClCompile Include="src\tests\Test.cpp" />
   </ItemGroup>
 </Project>
