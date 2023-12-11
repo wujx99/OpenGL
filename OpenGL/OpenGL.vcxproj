@@ -100,6 +100,7 @@
     <ClInclude Include="src\ShaderDataType.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestColor.h" />
+    <ClInclude Include="src\tests\TestTexture2D.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBuffer.h" />
@@ -531,6 +532,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestColor.cpp" />
+    <ClCompile Include="src\tests\TestTexture2D.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />

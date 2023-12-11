@@ -1319,6 +1319,7 @@
     </ClInclude>
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestColor.h" />
+    <ClInclude Include="src\tests\TestTexture2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -1356,5 +1357,6 @@
     </ClCompile>
     <ClCompile Include="src\tests\TestColor.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
+    <ClCompile Include="src\tests\TestTexture2D.cpp" />
   </ItemGroup>
 </Project>
