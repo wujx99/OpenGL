@@ -50,12 +50,15 @@ int main(void)
 	
 
 	
-	{
+	{	
+		/*
+		center to 0 , make it easy to calulate the MVP matrix
+		*/
 		float positions[] = {
-			100, 100, 0.0, 0.0,
-			500, 100, 1.0, 0.0,
-			500, 500, 1.0, 1.0,
-			100, 500, 0.0, 1.0,
+			-50, -50, 0.0, 0.0,
+			 50, -50, 1.0, 0.0,
+			 50,  50, 1.0, 1.0,
+			-50,  50, 0.0, 1.0,
 		};
 
 
@@ -87,9 +90,10 @@ int main(void)
 		shader.Bind();
 		shader.SetUniform4f("u_Color", 0.1f, 0.5f, 0.8f, 1.0f);
 
-		glm::vec3 translate(200.f, 200.f, 0.f); // used by imgui to set model matrix!
+		glm::vec3 translateA(200.f, 200.f, 0.f); // used by imgui to set model matrix!
+		glm::vec3 translateB(400.f, 200.f, 0.f); // used by imgui to set model matrix!
 		glm::mat4 proj = glm::ortho(0.0f, 900.f, 0.0f, 600.f, -1.0f, 1.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.f, 0.f, 0.f)); 
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f)); 
 		
 
 		Texture texture("asset/textures/test.png");
@@ -122,19 +126,30 @@ int main(void)
 			ImGui::NewFrame();
 
 
-			ImGui::Begin("Imgui debug!");                          			
-			ImGui::SliderFloat3("float", &translate.x, 0.0f, 900.f);    // set the translate of model matrix!
+			ImGui::Begin("Imgui debug!");  
+			{
+				ImGui::SliderFloat3("TranslateA", &translateA.x, 0.0f, 900.f);    // set the translate of model matrix!
+				ImGui::SliderFloat3("TranslateB", &translateB.x, 0.0f, 900.f);    // set the translate of model matrix!
+			}
 			ImGui::End();
 
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), translate);
-			glm::mat4 mvp = proj * view * model;
-			shader.Bind();
-			shader.SetUniformMat4f("u_MVP", mvp);
+			{
+				// first object
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translateA);
+				glm::mat4 mvp = proj * view * model;
+				shader.Bind();
+				shader.SetUniformMat4f("u_MVP", mvp);
+				renderer.Draw(va, ib, shader);
+			}
+			{
+				// second object
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), 2.f * translateB);
+				glm::mat4 mvp = proj * view * model;
+				shader.Bind();
+				shader.SetUniformMat4f("u_MVP", mvp);
+				renderer.Draw(va, ib, shader);
 
-			shader.Bind();
-			shader.SetUniform4f("u_Color", r, 0.5f, 0.8f, 1.0f);
-
-			renderer.Draw(va, ib, shader);
+			}
 
 
 			if (r > 1 || r < 0)
