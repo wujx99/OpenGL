@@ -19,6 +19,9 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "imgui.h"
+#include "vendor/imgui/imgui_impl_glfw.h"
+#include "vendor/imgui/imgui_impl_opengl3.h"
 
 int main(void)
 {
@@ -45,6 +48,8 @@ int main(void)
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
 	
+
+	
 	{
 		float positions[] = {
 			100, 100, 0.0, 0.0,
@@ -59,29 +64,8 @@ int main(void)
 			2, 3, 0
 		};
 
-		/*
-		what is blending£¿ how  do we render something that partially or fully transparent!
-
-		if we want to draw two square,one is read,one is blue,so what is the color of the intersection of this two square? 
-		the square color of top ,or blend to purple?
-
-		we have three ways to control blending
-		1. glEnable(GL_BLEND); glDisable(GL_BLEND);
-		2. glBlendFunc(src=GL_ONE, dest=GL_ZERO),src is factor of color output from fragment shader
-		and dest is factor to buffer our fragment shader is drawing to .GL_ONE and GL_ZERO is default.
-		3. glBlendEquation(mode = GL_FUNC_ADD); mode = how we combine the src and dest color!
-		*/
+		
 		GLCallV(glEnable(GL_BLEND));
-		/*
-		the follow function can be explain as :
-		if src alpha = 0.1 -----> GL_SRC_ALPHA = 0.1 ; 
-		dest = 1 - 0.1 = 0.9----> GL_ONE_MINUS_SRC_ALPHA = 0.9;
-		so the final color is
-			R = r_src * 0.1 + r_dest * (1- 0.1) -----> r_dest;
-			G = g_src * 0.1 + g_dest * (1- 0.1) -----> g_dest;
-			B = b_src * 0.1 + b_dest * (1- 0.1) -----> b_dest;
-			A = a_src * 0.1 + a_dest * (1- 0.1) -----> a_dest;
-			*/
 		GLCallV(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); 
 
 		VertexArray va;
@@ -103,22 +87,10 @@ int main(void)
 		shader.Bind();
 		shader.SetUniform4f("u_Color", 0.1f, 0.5f, 0.8f, 1.0f);
 
-		/*
-		understand the means of projection! 
-		with ortho project matrix ,we can replace the vertexs cooridate to [-1 , 1]; 
-		*/
+		glm::vec3 translate(200.f, 200.f, 0.f); // used by imgui to set model matrix!
 		glm::mat4 proj = glm::ortho(0.0f, 900.f, 0.0f, 600.f, -1.0f, 1.0f);
-		/*
-		we want to take the camera to right by 100,so we just move vertexs to left by 100( -100.f)
-		*/
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.f, 0.f, 0.f)); 
-		/*
-		the model matrix is intuitive , so just do it directly
-		*/
-		glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200.f, 200.f, 0.f));
-
-		glm::mat4 mvp = proj * view * model;
-		shader.SetUniformMat4f("u_MVP", mvp);
+		
 
 		Texture texture("asset/textures/test.png");
 		texture.Bind(7);  //bind to slot 7, set uniform to 7!
@@ -130,6 +102,12 @@ int main(void)
 		vb.UnBind();
 
 		Renderer renderer;
+
+		// imgui init and creat context
+		ImGui::CreateContext();
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui::StyleColorsDark();
+
 		float r = 0.0f;
 		float increment = 0.05f;
 
@@ -137,6 +115,21 @@ int main(void)
 		{
 
 			renderer.Clear();
+
+			// Start the Dear ImGui frame
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+
+			ImGui::Begin("Imgui debug!");                          			
+			ImGui::SliderFloat3("float", &translate.x, 0.0f, 900.f);    // set the translate of model matrix!
+			ImGui::End();
+
+			glm::mat4 model = glm::translate(glm::mat4(1.0f), translate);
+			glm::mat4 mvp = proj * view * model;
+			shader.Bind();
+			shader.SetUniformMat4f("u_MVP", mvp);
 
 			shader.Bind();
 			shader.SetUniform4f("u_Color", r, 0.5f, 0.8f, 1.0f);
@@ -149,10 +142,20 @@ int main(void)
 			r += increment;
 			glfwPollEvents();
 
+			// Rendering
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 			glfwSwapBuffers(window);
 		}
 
 	}
+
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	glfwTerminate();
 
 	return 0;
